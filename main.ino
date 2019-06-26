@@ -13,11 +13,11 @@
 // MARK: - Global Definitions
 
 #define sensorPin A0            // The reflex optocoupler's pin
-#define horizontalServoPin 9    // The big servo's connector pin
-#define verticalServoPin 10     // The small servo's connector pin
+#define horizontalServoPin 10   // The big servo's connector pin
+#define verticalServoPin 9      // The small servo's connector pin
 #define resetButtonPin 7        // The reset button's input pin
-#define whiteAngle 56           // The angle between the reset position and the white deposit
-#define blackAngle 34           // The angle between the reset position and the black deposit
+#define blackAngle 58           // The angle between the reset position and the white deposit
+#define whiteAngle 38           // The angle between the reset position and the black deposit
 #define servoSpeedFactor 30     // The delay (ms) between writing the next integer angle to any servo
 
 
@@ -66,9 +66,9 @@ void loop() {
 void enrollBall() {
     Serial.println("Enrolling ball...");
     // Move vertically
-    moveToAngleSlowly(verticalServo, 88);
+    moveToAngleSlowly(verticalServo, 68);
     // Delay further execution
-    sleepAndCheckButtonStatus(2000);
+    sleepAndCheckButtonStatus(1000);
 }
 
 /// A synchronous function that checks the optocoupler's value against a known threshold
@@ -76,21 +76,10 @@ void enrollBall() {
 /// Returns: A boolean value indicating whether the ball is white (true) or black (false)
 boolean isBallWhite() {
     // Compare the current sensor value to the calibrated threshold
-    return analogRead(sensorPin) < sensorNorm;
+    return analogRead(sensorPin) > sensorNorm;
 }
 
 /// A synchronous function that moves the horizontal servo, and with it the arm construction, to the left deposit hole
-/// Parameters: *None*
-/// Returns: *Nothing*
-void depositWhite() {
-    Serial.println("Depositing white ball...");
-    // Move horizontally
-    horizontalServo.write(90 - whiteAngle);
-    // Delay further execution
-    sleepAndCheckButtonStatus(2000);
-}
-
-/// A synchronous function that moves the horizontal servo, and with it the arm construction, to the right deposit hole
 /// Parameters: *None*
 /// Returns: *Nothing*
 void depositBlack() {
@@ -98,7 +87,18 @@ void depositBlack() {
     // Move horizontally
     horizontalServo.write(90 + blackAngle);
     // Delay further execution
-    sleepAndCheckButtonStatus(2000);
+    sleepAndCheckButtonStatus(500);
+}
+
+/// A synchronous function that moves the horizontal servo, and with it the arm construction, to the right deposit hole
+/// Parameters: *None*
+/// Returns: *Nothing*
+void depositWhite() {
+    Serial.println("Depositing white ball...");
+    // Move horizontally
+    horizontalServo.write(90 - whiteAngle);
+    // Delay further execution
+    sleepAndCheckButtonStatus(500);
 }
 
 /// A synchronous function that moves both servos to their initial position
@@ -119,7 +119,7 @@ void reset() {
 /// Returns: *Nothing*
 void calibrateSensor() {
     // Update the daylight value
-    sensorNorm = analogRead(sensorPin);
+    sensorNorm = analogRead(sensorPin) - 20;
     Serial.print("Sensor threshold set to ");
     Serial.println(sensorNorm);
 }
@@ -157,7 +157,6 @@ void resetIfNeeded() {
 ///             - int angle: The desired final angle
 /// Returns: *Nothing*
 void moveToAngleSlowly(Servo servo, int angle) {
-    Serial.println(servo.read());
     // Store the current servo angle as a constant
     const int initialAngle = servo.read();
     // Define increment sign based on direction of rotation
@@ -170,6 +169,6 @@ void moveToAngleSlowly(Servo servo, int angle) {
     // Iterate through all integer angles until the desired angle is met
     for (int currentAngle = initialAngle; currentAngle != angle; currentAngle += increment) {
         servo.write(currentAngle);
-        delay(30);
+        delay(6);
     }
 }
