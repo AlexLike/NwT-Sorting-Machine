@@ -2,7 +2,7 @@
 // A project by Simon Müller, Simeon Schwarzkopf & Alexander Zank
 // Copyright (C) 2019 Alexander Zank
 // Available under the MIT License, see README.md
-// Last update on 20.05.2019
+// Last update on 28.07.2019
 
 
 // MARK: - Dependencies
@@ -18,7 +18,6 @@
 #define resetButtonPin 7        // The reset button's input pin
 #define blackAngle 58           // The angle between the reset position and the white deposit
 #define whiteAngle 38           // The angle between the reset position and the black deposit
-#define servoSpeedFactor 30     // The delay (ms) between writing the next integer angle to any servo
 
 
 // MARK: - Global Properties
