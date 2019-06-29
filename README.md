@@ -38,7 +38,26 @@ void sleepAndCheckButtonStatus(int delay) {
 
 By constantly keeping track of the Arduino's runtime, `void resetIfNeeded()` can be called as long as the delay hasn't exceeded.
 
-While testing, we also noticed that the vertical servo motor was moving too quickly, resulting in a forceful punch onto the playfield's surface. To mitigate this issue, we implemented `void moveToAngleSlowly(Servo servo, int angle)`, a function that only updates servo values after a small delay, resulting in a slower movement without giving up much fluency.
+While testing, we also noticed that the vertical servo motor was moving too quickly, resulting in a forceful punch onto the playfield's surface. To mitigate this issue, we implemented `void moveToAngleSlowly(Servo servo, int angle)`, a function that only updates servo values after a small delay, resulting in a slower movement without giving up much fluency:
+
+```C++
+void moveToAngleSlowly(Servo servo, int angle) {
+    // Store the current servo angle as a constant
+    const int initialAngle = servo.read();
+    // Define increment sign based on direction of rotation
+    int increment;
+    if (initialAngle < angle) {
+        increment = 1;
+    } else {
+        increment = -1;
+    }
+    // Iterate through all integer angles until the desired angle is met
+    for (int currentAngle = initialAngle; currentAngle != angle; currentAngle += increment) {
+        servo.write(currentAngle);
+        delay(servoSpeedDelay);
+    }
+}
+```
 
 All these advanced functions, especially the servo one require a low latency so that no stuttering can become emminent. One measure to save dynamic storage, that impacts latency, while preserving the ease of use in the adjustment and calibration process (e.g. trying different `blackAngle`s) was the use of the C++-Keyword `#define` for any constant value in the code, as a declaration using said keyword isn't saved to the dynamic storage at runtime but rather filled in at compiletime. The Arduino has way more static storage for code than dynamic storage for changing variables, so using the latter allows for a better use of dynamic storage, e.g. the `sensorNorm` value that changes constantly.
 ## License
