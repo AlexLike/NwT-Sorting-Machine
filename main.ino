@@ -18,6 +18,7 @@
 #define resetButtonPin 7        // The reset button's input pin
 #define blackAngle 58           // The angle between the reset position and the white deposit
 #define whiteAngle 38           // The angle between the reset position and the black deposit
+#define servoSpeedDelay 6       // A millisecond value that passes between writing an angle of +/-1 to a slower servo
 
 
 // MARK: - Global Properties
@@ -46,13 +47,19 @@ void setup() {
 /// Parameters: *None*
 /// Returns: *Nothing*
 void loop() {
+    // Calibrate the optocoupler to the environmental lighting
     calibrateSensor();
+    // Pick up the tennis ball
     enrollBall();
+    // Differentiate between the ball's color
     if (isBallWhite()) {
+        // Move the ball to the white deposit hole
         depositWhite();
     } else {
+        // Move the ball to the black deposit hole
         depositBlack();
     }
+    // Move the machine back to its original position
     reset();
 }
 
@@ -168,6 +175,6 @@ void moveToAngleSlowly(Servo servo, int angle) {
     // Iterate through all integer angles until the desired angle is met
     for (int currentAngle = initialAngle; currentAngle != angle; currentAngle += increment) {
         servo.write(currentAngle);
-        delay(6);
+        delay(servoSpeedDelay);
     }
 }
