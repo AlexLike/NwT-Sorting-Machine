@@ -47,6 +47,8 @@ void setup() {
 /// Parameters: *None*
 /// Returns: *Nothing*
 void loop() {
+    // Move the machine to its original position
+    reset();
     // Calibrate the optocoupler to the environmental lighting
     calibrateSensor();
     // Pick up the tennis ball
@@ -59,8 +61,6 @@ void loop() {
         // Move the ball to the black deposit hole
         depositBlack();
     }
-    // Move the machine back to its original position
-    reset();
 }
 
 
@@ -72,24 +72,25 @@ void loop() {
 void enrollBall() {
     Serial.println("Enrolling ball...");
     // Move vertically
-    moveToAngleSlowly(verticalServo, 68);
+    moveToAngleSlowly(verticalServo, 72);
     // Delay further execution
-    sleepAndCheckButtonStatus(1000);
+    sleepAndCheckButtonStatus(2000);
 }
 
 /// A synchronous function that checks the optocoupler's value against a known threshold
 /// Parameters: *None*
 /// Returns: A boolean value indicating whether the ball is white (true) or black (false)
 boolean isBallWhite() {
+    Serial.println(analogRead(sensorPin));
     // Compare the current sensor value to the calibrated threshold
-    return analogRead(sensorPin) > sensorNorm;
+    return analogRead(sensorPin) < sensorNorm;
 }
 
 /// A synchronous function that moves the horizontal servo, and with it the arm construction, to the left deposit hole
 /// Parameters: *None*
 /// Returns: *Nothing*
-void depositBlack() {
-    Serial.println("Depositing black ball...");
+void depositWhite() {
+    Serial.println("Depositing white ball...");
     // Move horizontally
     horizontalServo.write(90 + blackAngle);
     // Delay further execution
@@ -99,8 +100,8 @@ void depositBlack() {
 /// A synchronous function that moves the horizontal servo, and with it the arm construction, to the right deposit hole
 /// Parameters: *None*
 /// Returns: *Nothing*
-void depositWhite() {
-    Serial.println("Depositing white ball...");
+void depositBlack() {
+    Serial.println("Depositing black ball...");
     // Move horizontally
     horizontalServo.write(90 - whiteAngle);
     // Delay further execution
@@ -125,7 +126,7 @@ void reset() {
 /// Returns: *Nothing*
 void calibrateSensor() {
     // Update the daylight value
-    sensorNorm = analogRead(sensorPin) - 20;
+    sensorNorm = analogRead(sensorPin) - 15;
     Serial.print("Sensor threshold set to ");
     Serial.println(sensorNorm);
 }

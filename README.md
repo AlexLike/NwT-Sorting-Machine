@@ -1,5 +1,5 @@
 # Sorting Machine
-**An educational project by Pauline Hocher, Jonas Herrmann, Marcel Karas, Simeon Schwarzkopf and Alexander Zank realized at Hohenstaufen-Gymnasium Bad Wimpfen during June 2018.**
+**An educational project by Simeon Schwarzkopf, Simon Müller and Alexander Zank realized at Hohenstaufen-Gymnasium Bad Wimpfen during June 2019.**
 
 ## Introduction
 The goal of project Sorting Machine is the implementation of a mechanism that sorts table tennis balls according to their color on a radial playfield into two depots: one for black and one for white balls.
